@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Financial App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- 通用导航栏 -->
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="/chat">Chat</a></li>
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- 页面内容 -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
