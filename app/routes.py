@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, g
 from app import app, db
 from app.models import User
 
@@ -68,4 +68,20 @@ def chat():
 def logout():
     session.clear()  # 清除会话
     return redirect(url_for('login'))  # 跳转到登录页面
+
+@app.before_request
+def load_current_user():
+    """
+    在每次请求之前检查用户是否已登录。
+    如果 session 中有用户 ID，将用户信息加载到全局变量 g。
+    """
+    user_id = session.get('user_id')
+    g.current_user = User.query.get(user_id) if user_id else None
+
+@app.context_processor
+def inject_user():
+    """
+    将当前用户注入到模板上下文中，使模板可以访问 current_user。
+    """
+    return {'current_user': g.current_user or None}
 
