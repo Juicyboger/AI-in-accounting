@@ -1,6 +1,7 @@
-from flask import render_template, request, redirect, url_for, flash, session, g
-from app import app, db
-from app.models import User
+from flask import render_template, request, redirect, url_for, flash, session, g, jsonify
+from . import app, db
+from .models import User
+from .chatbot import chatbot_response
 
 @app.route('/')
 def home():
