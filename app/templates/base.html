@@ -17,6 +17,12 @@
             {% else %}
                 <li><a href="/login">Login</a></li>
             {% endif %}
+            {% if 'user_id' in session %}
+                <p>Welcome, {{ session.username }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+
         </ul>
     </nav>
 

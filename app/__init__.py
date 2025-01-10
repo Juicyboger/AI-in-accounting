@@ -23,8 +23,6 @@ app.config['SECRET_KEY'] = "5d41402abc4b2a76b9719d911017c592"
 
 # 初始化数据库和登录管理
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
 
 # 导入路由（注意：放在初始化之后）
 from app import routes
