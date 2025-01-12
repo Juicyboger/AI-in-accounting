@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 获取 Hugging Face API Token 从环境变量
-HF_API_KEY = os.getenv('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')
+HF_API_KEY = os.getenv('HF_API_KEY')
 if not HF_API_KEY:
     raise ValueError("HF_API_KEY is not set in environment variables.")
 
@@ -24,7 +24,7 @@ def chatbot_response(user_input):
     try:
         # 使用适合聊天的模型，例如 'facebook/blenderbot-400M-distill'
         completion = client.chat.completions.create(
-            model="facebook/blenderbot-400M-distill", 
+            model="meta-llama/Meta-Llama-3-8B-Instruct", 
             messages=messages,
             max_tokens=150,
             temperature=0.7
