@@ -1,8 +1,13 @@
 from huggingface_hub import InferenceClient
 import os
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # 获取 Hugging Face API Token 从环境变量
-HF_API_KEY = os.getenv('HF_API_KEY')
+HF_API_KEY = os.getenv('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')
 if not HF_API_KEY:
     raise ValueError("HF_API_KEY is not set in environment variables.")
 
@@ -17,12 +22,18 @@ def chatbot_response(user_input):
     ]
     
     try:
+        # 使用适合聊天的模型，例如 'facebook/blenderbot-400M-distill'
         completion = client.chat.completions.create(
-            model="meta-llama/Meta-Llama-3-8B-Instruct",  # 确保你有访问权限，或者选择一个免费模型如 'gpt2'
+            model="facebook/blenderbot-400M-distill", 
             messages=messages,
-            max_tokens=500
+            max_tokens=150,
+            temperature=0.7
         )
-        return completion.choices[0].message['content']
+        # 确保根据模型的响应结构提取内容
+        response_content = completion.choices[0].message['content']
+        logger.info(f"User input: {user_input}")
+        logger.info(f"AI response: {response_content}")
+        return response_content
     except Exception as e:
-        print(f"Error: {e}")
+        logger.error(f"Error in chatbot_response: {e}")
         return "抱歉，我无法处理这个请求。请稍后再试。"
