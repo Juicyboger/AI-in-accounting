@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, flash, session, g
 from . import app, db
 from .models import User
 from .chatbot import chatbot_response
+from .finance_data import fetch_sg_stock_price
 
 @app.route('/')
 def home():
@@ -64,6 +65,23 @@ def chat():
         response = chatbot_response(user_input)
         return jsonify({'response': response})
     return render_template('chat.html', username=session.get('username'))
+
+@app.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    # 你可以在这里列出几个常用的新加坡股票代码，或者通过数据库动态获取
+    sg_symbols = ["D05.SI", "O39.SI", "U11.SI"]  # DBS, OCBC, UOB示例
+    stock_prices = []
+
+    for sym in sg_symbols:
+        data = fetch_sg_stock_price(sym)
+        if data:
+            stock_prices.append(data)
+
+    return render_template('dashboard.html', 
+                           stock_prices=stock_prices,
+                           # financial_news=financial_news
+                          )
 
 @app.route('/logout')
 def logout():

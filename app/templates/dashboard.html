@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Financial Dashboard</h1>
+<div class="row">
+    <div class="col-md-8">
+        <h4>新加坡股市动态</h4>
+        {% if stock_prices %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>股票代码</th>
+                        <th>最新价格</th>
+                        <th>交易日</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in stock_prices %}
+                    <tr>
+                        <td>{{ item.symbol }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.latest_trading_day }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>无法获取股票价格信息。</p>
+        {% endif %}
+    </div>
+    <!-- 如果有金融新闻等，可以在右侧展示 -->
+    <div class="col-md-4">
+        <h4>财务新闻 & 警报</h4>
+        <!-- 在此处渲染新闻或重大账户变动的列表 -->
+        <!--
+        {% if financial_news %}
+            <ul>
+            {% for news in financial_news %}
+                <li>
+                    <a href="{{ news.url }}" target="_blank">{{ news.title }}</a>
+                    <p>{{ news.summary }}</p>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>暂无财务新闻或警报。</p>
+        {% endif %}
+        -->
+        <p>敬请关注，新功能即将上线...</p>
+    </div>
+</div>
+{% endblock %}
