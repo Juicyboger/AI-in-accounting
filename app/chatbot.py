@@ -16,6 +16,10 @@ client = InferenceClient(api_key=HF_API_KEY)
 def chatbot_response(user_input):
     messages = [
         {
+            "role": "system",
+            "content": "You are a professional financial advisor, responsible for providing accurate and detailed financial advice and answering financial related questions. Please answer users' questions in a clear, concise and professional manner."
+        },
+        {
             "role": "user",
             "content": user_input
         }
@@ -36,4 +40,4 @@ def chatbot_response(user_input):
         return response_content
     except Exception as e:
         logger.error(f"Error in chatbot_response: {e}")
-        return "抱歉，我无法处理这个请求。请稍后再试。"
+        return "Sorry, I can't process this request. Please try again later."
