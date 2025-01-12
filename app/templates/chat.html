@@ -3,12 +3,17 @@
 {% block title %}Chat{% endblock %}
 
 {% block content %}
-<h1>Chat with our AI Assistant</h1>
-<div id="chat-container">
-    <div id="chat-messages"></div>
-    <form id="chat-form">
-        <input type="text" id="user-input" placeholder="Type your message here..." required>
-        <button type="submit">Send</button>
-    </form>
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <h1 class="mb-4">Chat with our AI Assistant</h1>
+        <div id="chat-container">
+            <div id="chat-messages"></div>
+            <!-- 使用 Bootstrap 的表单类 -->
+            <form id="chat-form" class="d-flex">
+                <input type="text" id="user-input" class="form-control" placeholder="Type your message here..." required>
+                <button type="submit" class="btn btn-primary ms-2">Send</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
