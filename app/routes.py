@@ -69,19 +69,18 @@ def chat():
 @app.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
-    # 你可以在这里列出几个常用的新加坡股票代码，或者通过数据库动态获取
-    sg_symbols = ["D05.SI", "O39.SI", "U11.SI"]  # DBS, OCBC, UOB示例
+    sg_symbols = ["D05.SI", "O39.SI", "U11.SI"]  # DBS, OCBC, UOB
     stock_prices = []
 
     for sym in sg_symbols:
         data = fetch_sg_stock_price(sym)
         if data:
             stock_prices.append(data)
+        else:
+            # 调试：看看哪个 symbol 失败
+            print(f"Fetch failed or no data for symbol={sym}")
 
-    return render_template('dashboard.html', 
-                           stock_prices=stock_prices,
-                           # financial_news=financial_news
-                          )
+    return render_template('dashboard.html', stock_prices=stock_prices)
 
 @app.route('/logout')
 def logout():
