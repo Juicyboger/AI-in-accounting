@@ -69,18 +69,18 @@ def chat():
 @app.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():
-    sg_symbols = ["D05.SI", "O39.SI", "U11.SI"]  # DBS, OCBC, UOB
+    sg_symbols = ["D05.SI", "O39.SI", "U11.SI"]
     stock_prices = []
 
     for sym in sg_symbols:
-        data = fetch_sg_stock_price(sym)
+        data = fetch_sg_stock_price_yf(sym)
         if data:
             stock_prices.append(data)
         else:
-            # 调试：看看哪个 symbol 失败
-            print(f"Fetch failed or no data for symbol={sym}")
+            print(f"Failed to get yfinance data for {sym}")
 
     return render_template('dashboard.html', stock_prices=stock_prices)
+
 
 @app.route('/logout')
 def logout():

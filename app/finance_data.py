@@ -1,59 +1,28 @@
-# app/finance_data.py
-
-import os
-import requests
+import yfinance as yf
 import logging
 
 logger = logging.getLogger(__name__)
 
-def fetch_sg_stock_price(symbol: str):
+def fetch_sg_stock_price_yf(symbol: str):
     """
-    从 Alpha Vantage 获取指定新加坡股票的实时价格。
-    symbol: 股票代码（可能需要 Alpha Vantage 支持的格式，如 "D05.SI" 表示 DBS 银行）
-    返回包含最新价格、时间戳等信息的字典，若获取失败则返回 None
+    使用yfinance获取新加坡股票的最新收盘价。
+    symbol: 类似 'D05.SI' 代表 DBS Bank
     """
-    api_key = os.getenv("ALPHA_VANTAGE_KEY")
-    if not api_key:
-        raise ValueError("未找到 ALPHA_VANTAGE_KEY，请在环境变量中配置。")
-
-    url = "https://www.alphavantage.co/query"
-    params = {
-        "function": "GLOBAL_QUOTE",
-        "symbol": symbol,
-        "apikey": api_key
-    }
-
     try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        
-        data = response.json()
-
-        # 日志：打印完整 JSON 或关键字段，方便调试
-        logger.info(f"[AlphaVantage] Raw JSON response for {symbol}: {data}")
-
-        # 检查可能的错误字段
-        if "Error Message" in data:
-            logger.warning(f"Alpha Vantage returned Error Message for symbol={symbol}")
+        ticker = yf.Ticker(symbol)
+        data = ticker.history(period="1d")  # 获取最近1天的历史数据
+        if data.empty:
+            logger.warning(f"No data returned from yfinance for {symbol}")
             return None
 
-        if "Note" in data:
-            logger.warning(f"Alpha Vantage returned Note (likely API limit reached): {data['Note']}")
-            return None
-        
-        # 正常情况: "Global Quote" 结构
-        quote_data = data.get("Global Quote", {})
-        if not quote_data or quote_data.get("05. price") in (None, "", "0.0000"):
-            logger.warning(f"No valid 'Global Quote' found for {symbol}: {quote_data}")
-            return None
+        latest_price = data["Close"].iloc[-1]
+        latest_date = data.index[-1].date()
 
-        result = {
-            "symbol": quote_data.get("01. symbol"),
-            "price": quote_data.get("05. price"),
-            "latest_trading_day": quote_data.get("07. latest trading day")
+        return {
+            "symbol": symbol,
+            "price": f"{latest_price:.2f}",  # 保留2位小数
+            "latest_trading_day": str(latest_date)
         }
-        return result
-
-    except requests.exceptions.RequestException as e:
-        logger.error(f"[AlphaVantage] RequestException: {e}")
+    except Exception as e:
+        logger.error(f"Error fetching yfinance data for {symbol}: {e}")
         return None
