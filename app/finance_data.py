@@ -18,7 +18,7 @@ def fetch_sg_stock_price(symbol: str):
         latest_price = data["Close"].iloc[-1]
         latest_date = data.index[-1].date()
 
-        info_data = ticker.info
+        info = ticker.info
         short_name = info.get("shortName")
 
         return {
