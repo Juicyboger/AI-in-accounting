@@ -18,8 +18,12 @@ def fetch_sg_stock_price(symbol: str):
         latest_price = data["Close"].iloc[-1]
         latest_date = data.index[-1].date()
 
+        info_data = ticker.info
+        short_name = info.get("shortName")
+
         return {
             "symbol": symbol,
+            "name": short_name,
             "price": f"{latest_price:.2f}",  # 保留2位小数
             "latest_trading_day": str(latest_date)
         }

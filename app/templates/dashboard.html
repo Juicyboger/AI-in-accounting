@@ -6,20 +6,22 @@
 <h1>Financial Dashboard</h1>
 <div class="row">
     <div class="col-md-8">
-        <h4>新加坡股市动态</h4>
+        <h4>Selected Stock</h4>
         {% if stock_prices %}
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>股票代码</th>
-                        <th>最新价格</th>
-                        <th>交易日</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Recent Quotation</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for item in stock_prices %}
                     <tr>
                         <td>{{ item.symbol }}</td>
+                        <td>{{ item.name}}</td>
                         <td>{{ item.price }}</td>
                         <td>{{ item.latest_trading_day }}</td>
                     </tr>
@@ -27,7 +29,7 @@
                 </tbody>
             </table>
         {% else %}
-            <p>无法获取股票价格信息。</p>
+            <p>Stock price information is not available.</p>
         {% endif %}
     </div>
     <!-- 如果有金融新闻等，可以在右侧展示 -->
