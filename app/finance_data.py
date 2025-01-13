@@ -3,7 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def fetch_sg_stock_price_yf(symbol: str):
+def fetch_sg_stock_price(symbol: str):
     """
     使用yfinance获取新加坡股票的最新收盘价。
     symbol: 类似 'D05.SI' 代表 DBS Bank

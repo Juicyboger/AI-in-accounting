@@ -73,7 +73,7 @@ def dashboard():
     stock_prices = []
 
     for sym in sg_symbols:
-        data = fetch_sg_stock_price_yf(sym)
+        data = fetch_sg_stock_price(sym)
         if data:
             stock_prices.append(data)
         else:
