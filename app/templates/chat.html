@@ -8,7 +8,7 @@
     <h1 class="mb-4">Chat with our AI Assistant</h1>
     <div id="chat-container">
       <div id="chat-messages">
-        <!-- 这里最初可能为空，后续新回答动态追加 -->
+        <!-- 初始时可能为空，后续新回答动态追加 -->
       </div>
       <!-- 聊天输入框及发送按钮 -->
       <form id="chat-form" class="d-flex mt-3">
@@ -22,18 +22,38 @@
 
 {% block scripts %}
 <script>
-  // 当用户提交聊天信息时，模拟获取机器人回答并追加新的反馈区域
+  // 用户提交聊天信息时，生成新的回答和反馈区域
   document.getElementById('chat-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const userInput = document.getElementById('user-input').value.trim();
     if (!userInput) return;
     
+    // 在此处调用实际的机器人回答逻辑，比如通过 AJAX 调用后端 API 获取回答
+    // 示例中直接模拟一个回答（请替换为实际的实现）
+    const chatbotAnswer = await getChatbotAnswer(userInput);
+    
     // 清空输入框
     document.getElementById('user-input').value = "";
     
-    // 调用函数生成新的回答和反馈区域
+    // 生成新的回答和反馈区域
     appendChatbotAnswer(chatbotAnswer);
   });
+
+  /**
+   * 模拟获取机器人回答的函数
+   * 你应替换为调用你实际聊天机器人接口的逻辑
+   * @param {string} userInput - 用户输入
+   * @returns {Promise<string>} - 模拟的机器人回答
+   */
+  async function getChatbotAnswer(userInput) {
+    // 模拟网络延时
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // 这里直接返回一个示例回答，请替换为真实回答
+        resolve("这是针对“" + userInput + "”的回答。");
+      }, 500);
+    });
+  }
 
   /**
    * 动态生成一条新的机器人回答，并在回答下方附带独立的反馈区域
@@ -44,12 +64,12 @@
     const messageDiv = document.createElement('div');
     messageDiv.className = "chat-message chatbot mb-3";
     
-    // 构造答案内容
+    // 创建回答内容
     const answerPara = document.createElement('p');
     answerPara.className = "chatbot-answer";
     answerPara.innerText = answerText;
     
-    // 构造反馈区域（初始状态 data-feedback-submitted 为 "false"）
+    // 创建反馈区域，初始状态 data-feedback-submitted 为 "false"
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = "feedback mt-2";
     feedbackDiv.setAttribute('data-feedback-submitted', 'false');
@@ -63,12 +83,12 @@
       <span class="feedback-msg text-success ms-2"></span>
     `;
     
-    // 将答案和反馈区域添加到新生成的消息容器中
+    // 将回答和反馈区域添加到消息容器中
     messageDiv.appendChild(answerPara);
     messageDiv.appendChild(feedbackDiv);
     chatMessages.appendChild(messageDiv);
     
-    // 滚动到最新消息
+    // 自动滚动到最新消息
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
@@ -87,7 +107,7 @@
       return;
     }
     
-    // 获取当前回答的文本
+    // 获取当前回答文本
     const chatbotAnswerElement = feedbackBlock.parentElement.querySelector('.chatbot-answer');
     const answerText = chatbotAnswerElement ? chatbotAnswerElement.innerText : "";
     if (!answerText) {
@@ -109,11 +129,11 @@
         feedbackBlock.setAttribute('data-feedback-submitted', 'true');
         // 显示反馈已提交提示
         feedbackBlock.querySelector('.feedback-msg').innerText = "Your feedback has been submitted";
-        // 禁用反馈区域的所有按钮，防止重复提交
+        // 禁用反馈区域内所有按钮，防止重复提交
         const buttons = feedbackBlock.querySelectorAll('button');
         buttons.forEach(btn => btn.disabled = true);
       } else {
-        alert(result.error || 'Feedback failed');
+        alert(result.error || '反馈提交失败');
       }
     } catch (error) {
       console.error('Feedback error:', error);
