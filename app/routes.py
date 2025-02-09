@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session, g, jsonify, abort
 from . import app, db
-from .models import User
+from .models import User, ChatbotFeedback
 from .chatbot import chatbot_response
 from .finance_data import fetch_sg_stock_price
 from flask_login import login_required, current_user
@@ -147,22 +147,6 @@ def admin_feedback():
     # 查询所有反馈记录，按时间倒序排列
     feedbacks = ChatbotFeedback.query.order_by(ChatbotFeedback.timestamp.desc()).all()
     return render_template('admin_feedback.html', feedbacks=feedbacks)
-
-
-@app.route('/create_admin', methods=['POST'])
-def create_admin():
-    data = request.get_json()
-    username = data.get('admin')
-    password = data.get('6666')
-    if not username or not password:
-        return jsonify({'error': '用户名和密码必填'}), 400
-    if User.query.filter_by(username=username).first():
-        return jsonify({'error': '该用户名已存在'}), 400
-    new_admin = User(username=username, is_admin=True)
-    new_admin.set_password(password)
-    db.session.add(new_admin)
-    db.session.commit()
-    return jsonify({'message': '管理员账号创建成功'})
 
 if __name__ == "__main__":
     app.run()
