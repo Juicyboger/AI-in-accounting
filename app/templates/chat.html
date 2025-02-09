@@ -28,10 +28,6 @@
     const userInput = document.getElementById('user-input').value.trim();
     if (!userInput) return;
     
-    // 在这里你可以把用户输入发送给后端或者调用机器人接口获得回答
-    // 这里我们简单模拟一下，机器人回答固定文字加上用户输入（实际逻辑请自行替换）
-    const chatbotAnswer = "机器人回答：" + userInput;
-    
     // 清空输入框
     document.getElementById('user-input').value = "";
     
@@ -112,12 +108,12 @@
         // 标记当前反馈区域为已提交
         feedbackBlock.setAttribute('data-feedback-submitted', 'true');
         // 显示反馈已提交提示
-        feedbackBlock.querySelector('.feedback-msg').innerText = "你的反馈已提交";
+        feedbackBlock.querySelector('.feedback-msg').innerText = "Your feedback has been submitted";
         // 禁用反馈区域的所有按钮，防止重复提交
         const buttons = feedbackBlock.querySelectorAll('button');
         buttons.forEach(btn => btn.disabled = true);
       } else {
-        alert(result.error || '反馈提交失败');
+        alert(result.error || 'Feedback failed');
       }
     } catch (error) {
       console.error('Feedback error:', error);
