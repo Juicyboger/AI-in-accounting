@@ -111,9 +111,8 @@ def transfer_page():
 # routes.py
 from flask import request, jsonify, g
 from .models import ChatbotFeedback
-from functools import wraps
+from flask_login import login_required
 
-# 确保用户已登录，这里使用你已有的 login_required 装饰器
 @app.route('/feedback', methods=['POST'])
 @login_required
 def feedback():
@@ -124,8 +123,13 @@ def feedback():
     if rating is None or answer is None:
         return jsonify({'error': 'Rating and answer are required'}), 400
 
+    # 检查当前用户是否已经对这条回答提交过反馈（假设回答文本作为唯一标识）
+    existing = ChatbotFeedback.query.filter_by(user_id=g.current_user.id, answer=answer).first()
+    if existing:
+        return jsonify({'error': 'Feedback for this answer has already been submitted.'}), 400
+
     new_feedback = ChatbotFeedback(
-        user_id=g.current_user.id,  # 确保 g.current_user 已通过登录装饰器加载
+        user_id=g.current_user.id,
         rating=rating,
         answer=answer
     )
@@ -133,6 +137,7 @@ def feedback():
     db.session.commit()
 
     return jsonify({'message': 'Feedback recorded successfully'})
+
 
 
 if __name__ == "__main__":
