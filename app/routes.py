@@ -103,6 +103,12 @@ def inject_user():
     """
     return {'current_user': g.current_user or None}
 
+@app.route('/transfer', methods=['GET'])
+@login_required
+def transfer_page():
+    return render_template('transfer.html')
+
+
 
 
 
