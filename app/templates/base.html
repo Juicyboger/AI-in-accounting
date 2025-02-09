@@ -64,5 +64,7 @@
     
     <!-- 你现有的自定义 JS -->
     <script src="{{ url_for('static', filename='js/style.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>
