@@ -103,3 +103,6 @@ def inject_user():
     """
     return {'current_user': g.current_user or None}
 
+
+
+
