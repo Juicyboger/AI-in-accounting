@@ -108,6 +108,33 @@ def inject_user():
 def transfer_page():
     return render_template('transfer.html')
 
+# routes.py
+from flask import request, jsonify, g
+from .models import ChatbotFeedback
+from functools import wraps
+
+# 确保用户已登录，这里使用你已有的 login_required 装饰器
+@app.route('/feedback', methods=['POST'])
+@login_required
+def feedback():
+    data = request.get_json()
+    rating = data.get('rating')
+    answer = data.get('answer')
+    
+    if rating is None or answer is None:
+        return jsonify({'error': 'Rating and answer are required'}), 400
+
+    new_feedback = ChatbotFeedback(
+        user_id=g.current_user.id,  # 确保 g.current_user 已通过登录装饰器加载
+        rating=rating,
+        answer=answer
+    )
+    db.session.add(new_feedback)
+    db.session.commit()
+
+    return jsonify({'message': 'Feedback recorded successfully'})
+
+
 if __name__ == "__main__":
     app.run()
 

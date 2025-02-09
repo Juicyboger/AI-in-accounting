@@ -17,6 +17,7 @@
                         <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(3)">3★</button>
                         <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(4)">4★</button>
                         <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(5)">5★</button>
+                        <span class="feedback-msg text-success ms-2"></span>
                     </div>
                 </div>
             </div>        
@@ -28,4 +29,45 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 假设你已引入 Web3 或其它聊天逻辑，此处仅关注反馈功能
+    async function submitFeedback(button, rating) {
+        // 找到当前反馈区域
+        const feedbackBlock = button.parentElement;
+        // 找到对应的机器人答案文本所在元素
+        // 假设答案文本存放在同一父元素中的 .chatbot-answer 元素中
+        const chatbotAnswerElement = feedbackBlock.parentElement.querySelector('.chatbot-answer');
+        const answerText = chatbotAnswerElement ? chatbotAnswerElement.innerText : "";
+        if (!answerText) {
+            alert("无法获取答案内容");
+            return;
+        }
+        
+        try {
+            const response = await fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ rating: rating, answer: answerText })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                // 显示反馈已提交的提示
+                feedbackBlock.querySelector('.feedback-msg').innerText = "你的反馈已提交";
+                // 禁用所有反馈按钮，避免重复提交
+                const buttons = feedbackBlock.querySelectorAll('button');
+                buttons.forEach(btn => btn.disabled = true);
+            } else {
+                alert(result.error || '反馈提交失败');
+            }
+        } catch (error) {
+            console.error('Feedback error:', error);
+            alert('提交反馈时发生错误');
+        }
+    }
+</script>
 {% endblock %}

@@ -5,6 +5,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    answer = db.Column(db.Text, nullable=False)  # 聊天机器人生成的答案
+    rating = db.Column(db.Integer, nullable=False)
 
     @property
     def is_authenticated(self):
