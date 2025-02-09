@@ -8,24 +8,23 @@
     <h1 class="mb-4">Chat with our AI Assistant</h1>
     <div id="chat-container">
       <div id="chat-messages">
-        <!-- 示例：一条聊天记录（后续可以通过 JavaScript 动态追加） -->
+        <!-- 示例：预先存在的一条机器人回答 -->
+        <!-- 以后你可以动态追加多条记录 -->
         <div class="chat-message chatbot mb-3">
-          <p class="chatbot-answer">这里是聊天机器人生成的答案...</p>
-          <!-- 反馈区域，初始时 data-feedback-submitted 为 false -->
+          <p class="chatbot-answer">这里是机器人生成的答案示例...</p>
+          <!-- 内嵌反馈区域，初始状态 data-feedback-submitted 为 false -->
           <div class="feedback mt-2" data-feedback-submitted="false">
-            <span>请为上面的回答打分：</span>
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 1)">1★</button>
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 2)">2★</button>
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 3)">3★</button>
-            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 4)">4★</button>
-            <button class="btn btn-sm btn-outline-warning" onclick="submitFeedbackInline(this, 5)">5★</button>
-            <!-- 用于显示反馈状态的提示信息 -->
+            <span>Rate this answer: </span>
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 1)">1★</button>
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 2)">2★</button>
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 3)">3★</button>
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 4)">4★</button>
+            <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(this, 5)">5★</button>
             <span class="feedback-msg text-success ms-2"></span>
           </div>
         </div>
-        <!-- 后续的聊天记录都可以按上述结构生成 -->
       </div>
-      <!-- 聊天输入区域 -->
+      <!-- 聊天输入框及发送按钮 -->
       <form id="chat-form" class="d-flex mt-3">
         <input type="text" id="user-input" class="form-control" placeholder="Type your message here..." required>
         <button type="submit" class="btn btn-primary ms-2">Send</button>
@@ -37,17 +36,22 @@
 
 {% block scripts %}
 <script>
-  // inline feedback 提交函数：button 为当前点击的按钮，rating 为用户选择的星级
-  async function submitFeedbackInline(button, rating) {
-    // 定位到当前反馈区域所在的父元素
+  /**
+   * 提交反馈，按钮点击时调用
+   * @param {HTMLElement} button - 被点击的反馈按钮
+   * @param {number} rating - 用户选择的星级（1～5）
+   */
+  async function submitFeedback(button, rating) {
+    // 定位到当前反馈区域（feedback div）
     const feedbackBlock = button.parentElement;
-    // 如果该区域已提交过反馈，直接提示并返回
+    
+    // 检查当前回答是否已经提交过反馈
     if (feedbackBlock.getAttribute('data-feedback-submitted') === 'true') {
       alert("你已经提交过反馈，不能重复提交。");
       return;
     }
     
-    // 获取同一聊天记录中的答案文本
+    // 获取同一聊天记录中机器人回答的文本
     const chatbotAnswerElement = feedbackBlock.parentElement.querySelector('.chatbot-answer');
     const answerText = chatbotAnswerElement ? chatbotAnswerElement.innerText : "";
     if (!answerText) {
@@ -65,45 +69,58 @@
       });
       const result = await response.json();
       if (response.ok) {
-        // 设置属性，标记已经提交过反馈
+        // 设置属性标记已经提交过反馈
         feedbackBlock.setAttribute('data-feedback-submitted', 'true');
-        // 更新反馈区域，显示“你的反馈已提交”
+        // 显示“你的反馈已提交”的提示
         feedbackBlock.querySelector('.feedback-msg').innerText = "你的反馈已提交";
-        // 禁用当前反馈区域内所有星级按钮，防止重复提交
+        // 禁用该反馈区域所有按钮，避免重复提交
         const buttons = feedbackBlock.querySelectorAll('button');
         buttons.forEach(btn => btn.disabled = true);
       } else {
         alert(result.error || '反馈提交失败');
       }
     } catch (error) {
-      console.error("提交反馈时发生错误：", error);
-      alert("提交反馈时发生错误");
+      console.error('Feedback error:', error);
+      alert('提交反馈时发生错误');
     }
   }
-  
-  // 示例：当机器人生成答案后，将答案追加到聊天记录中，并自动显示反馈区域
-  // 此函数仅为示例，你可根据实际聊天逻辑调用
+
+  /**
+   * 示例：动态添加一条新的机器人回答及反馈区域
+   * 你可以在聊天逻辑中调用该函数来生成新记录
+   */
   function appendChatbotAnswer(answerText) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = "chat-message chatbot mb-3";
-    messageDiv.innerHTML = `
-      <p class="chatbot-answer">${answerText}</p>
-      <div class="feedback mt-2" data-feedback-submitted="false">
-        <span>请为上面的回答打分：</span>
-        <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 1)">1★</button>
-        <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 2)">2★</button>
-        <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 3)">3★</button>
-        <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedbackInline(this, 4)">4★</button>
-        <button class="btn btn-sm btn-outline-warning" onclick="submitFeedbackInline(this, 5)">5★</button>
-        <span class="feedback-msg text-success ms-2"></span>
-      </div>
+    
+    // 构造答案内容
+    const answerPara = document.createElement('p');
+    answerPara.className = "chatbot-answer";
+    answerPara.innerText = answerText;
+    
+    // 构造反馈区域
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = "feedback mt-2";
+    feedbackDiv.setAttribute('data-feedback-submitted', 'false');
+    feedbackDiv.innerHTML = `
+      <span>Rate this answer: </span>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 1)">1★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 2)">2★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 3)">3★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 4)">4★</button>
+      <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(this, 5)">5★</button>
+      <span class="feedback-msg text-success ms-2"></span>
     `;
+    
+    // 将答案和反馈区域添加到消息区
+    messageDiv.appendChild(answerPara);
+    messageDiv.appendChild(feedbackDiv);
     chatMessages.appendChild(messageDiv);
   }
-  
-  // 示例：模拟机器人回答生成后调用 appendChatbotAnswer()
-  // 你可以在接收到机器人答案时调用该函数
-  // appendChatbotAnswer("这是一个新的机器人回答示例。");
+
+  // 示例：模拟接收到机器人回答后动态添加记录
+  // 你可以在发送用户消息后，根据聊天机器人生成的答案调用该函数
+  // appendChatbotAnswer("这是新的机器人回答示例。");
 </script>
 {% endblock %}
