@@ -111,7 +111,6 @@ def transfer_page():
 # routes.py
 from flask import request, jsonify, g
 from .models import ChatbotFeedback
-from flask_login import login_required
 
 @app.route('/feedback', methods=['POST'])
 @login_required
