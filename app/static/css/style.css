@@ -36,3 +36,12 @@ body {
         margin-bottom: 10px;
     }
 }
+
+/* 覆盖 .btn-outline-warning 被禁用时的样式 */
+.btn-outline-warning:disabled {
+    background-color: #ffc107; /* 例如金黄色背景 */
+    color: white;              /* 字体颜色白色 */
+    border-color: #ffc107;     /* 边框颜色同背景 */
+    opacity: 1;                /* 取消透明度降低的效果 */
+    cursor: default;           /* 指针样式保持默认 */
+}

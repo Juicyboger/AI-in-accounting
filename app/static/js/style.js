@@ -28,3 +28,33 @@ document.getElementById('chat-form').addEventListener('submit', async function (
     document.getElementById('user-input').value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
+
+async function submitFeedback(button, rating) {
+    const feedbackBlock = button.parentElement;
+    const chatbotAnswerElement = feedbackBlock.parentElement.querySelector('.chatbot-answer');
+    const answerText = chatbotAnswerElement ? chatbotAnswerElement.innerText : "";
+    if (!answerText) {
+        alert("无法获取答案内容");
+        return;
+    }
+    
+    try {
+        const response = await fetch('/feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ rating: rating, answer: answerText })
+        });
+        const result = await response.json();
+        if (response.ok) {
+            // 隐藏按钮区域，显示反馈已提交提示
+            feedbackBlock.innerHTML = '<span class="feedback-msg text-success">你的反馈已提交</span>';
+        } else {
+            alert(result.error || '反馈提交失败');
+        }
+    } catch (error) {
+        console.error('Feedback error:', error);
+        alert('提交反馈时发生错误');
+    }
+}
