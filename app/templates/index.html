@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>主页</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-</head>
-<body class="container mt-5">
-  <h1>欢迎，{{ current_user.username }}</h1>
-  {% if current_user.is_admin %}
-    <p><a href="{{ url_for('admin_feedback') }}" class="btn btn-success">查看反馈报告</a></p>
-  {% endif %}
-  <p><a href="{{ url_for('logout') }}" class="btn btn-secondary">退出登录</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Welcome, {{ current_user.username }}</h1>
+    <!-- 仅当管理员显示查看反馈报告按钮 -->
+    {% if current_user.is_admin %}
+        <p><a href="{{ url_for('admin_feedback') }}" class="btn btn-success">View Feedback Report</a></p>
+    {% endif %}
+    <p><a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a></p>
+</div>
+{% endblock %}

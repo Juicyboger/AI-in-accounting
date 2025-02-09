@@ -1,8 +1,9 @@
-from flask import render_template, request, redirect, url_for, flash, session, g, jsonify
+from flask import render_template, request, redirect, url_for, flash, session, g, jsonify, abort
 from . import app, db
 from .models import User
 from .chatbot import chatbot_response
 from .finance_data import fetch_sg_stock_price
+from flask_login import login_required, current_user
 
 @app.route('/')
 def home():
@@ -140,9 +141,9 @@ def feedback():
 @app.route('/admin/feedback')
 @login_required
 def admin_feedback():
-    # 仅允许管理员访问
-    if not current_user.is_admin:
-        abort(403)
+    # 只有管理员才能访问
+    if not getattr(current_user, 'is_admin', False):
+        abort(403)  # 非管理员返回 403 Forbidden
     # 查询所有反馈记录，按时间倒序排列
     feedbacks = ChatbotFeedback.query.order_by(ChatbotFeedback.timestamp.desc()).all()
     return render_template('admin_feedback.html', feedbacks=feedbacks)
