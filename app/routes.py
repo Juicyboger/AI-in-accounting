@@ -96,6 +96,8 @@ def load_current_user():
     """
     user_id = session.get('user_id')
     g.current_user = User.query.get(user_id) if user_id else None
+    if g.current_user:
+        app.logger.info("Current user: %s, is_admin: %s", g.current_user.username, getattr(g.current_user, 'is_admin', None))
 
 @app.context_processor
 def inject_user():
