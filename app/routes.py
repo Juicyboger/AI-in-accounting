@@ -40,12 +40,17 @@ def login():
         if user:
             session['user_id'] = user.id  # 使用 session 存储用户 ID
             session['username'] = user.username
-            return redirect(url_for('chat'))  # 登录成功后跳转到聊天页面
+            # 根据用户是否为管理员来决定跳转页面
+            if getattr(user, 'is_admin', False):
+                return redirect(url_for('home'))  # 管理员跳转到首页（home.html），首页中显示管理员专用链接
+            else:
+                return redirect(url_for('chat'))  # 普通用户跳转到聊天页面
         else:
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
 
 from functools import wraps
 

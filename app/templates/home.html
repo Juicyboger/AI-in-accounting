@@ -8,15 +8,26 @@
         <h1>Welcome to the Financial App</h1>
         <p>Explore our features: personalized financial advice, chat support, and more!</p>
         
-        <!-- 在此添加一个指向 dashboard 路由的按钮或链接 -->
+        <!-- 通用功能按钮 -->
         <p>
             <a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-3">
                 View Dashboard
             </a>
             <a href="{{ url_for('transfer_page') }}" class="btn btn-success mt-3">
                 Transfer
-            </a> 
+            </a>
         </p>
+        
+        <!-- 如果当前用户是管理员，则显示查看反馈报告的按钮 -->
+        {% if current_user and current_user.is_admin %}
+        <p>
+            <a href="{{ url_for('admin_feedback') }}" class="btn btn-warning mt-3">
+                View Feedback Report
+            </a>
+        </p>
+        {% endif %}
+        
+        <p><a href="{{ url_for('logout') }}" class="btn btn-secondary mt-3">Logout</a></p>
     </div>
 </div>
 {% endblock %}
