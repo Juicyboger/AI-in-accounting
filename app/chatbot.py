@@ -27,7 +27,7 @@ def chatbot_response(user_input):
         
     try:
         completion = client.chat.completions.create(
-            model="facebook/blenderbot-400M-distill", 
+            model="meta-llama/Meta-Llama-3-8B-Instruct", 
             messages=messages,  # 传入字符串
             max_tokens=150,
             temperature=0.7
