@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 设置 SECRET_KEY
-app.config['SECRET_KEY'] = "ScOxHm8wkCrffUBhEXQhOkG7AI2xzCTT"
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # 初始化数据库和登录管理
 db = SQLAlchemy(app)
