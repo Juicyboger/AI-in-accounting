@@ -29,7 +29,7 @@ def chatbot_response(user_input):
                 "the specific degree of the user's needs to you, and for "
                 "relatively general requirements, further understand the user's "
                 "individual needs by asking questions to ensure that you can "
-                "give the most accurate advice based on these needs."
+                "give the most accurate advice based on these needs. Please reply me in English."
             )
         },
         {
@@ -42,7 +42,7 @@ def chatbot_response(user_input):
         completion = client.chat.completions.create(
             model="deepseek-ai/DeepSeek-R1",
             messages=messages,
-            max_tokens=500,   # 可根据需求进行调节
+            max_tokens=1500,   # 可根据需求进行调节
             temperature=0.7   # 可根据需求进行调节
         )
         # 从响应结果中获取聊天回复内容
