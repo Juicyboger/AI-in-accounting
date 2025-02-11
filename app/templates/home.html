@@ -10,6 +10,7 @@
         
         <!-- 通用功能按钮 -->
         <p>
+        <div class="d-flex justify-content-between mt-3"></div>
             <a href="{{ url_for('dashboard') }}" class="btn btn-primary flex-fill mt-1">
                 View Dashboard
             </a>
@@ -19,6 +20,7 @@
             <a href="{{ url_for('chat') }}" class="btn btn-warning flex-fill mt-1">
                 Chat
             </a>
+        </div>
         </p>
         
         <!-- 如果当前用户是管理员，则显示查看反馈报告的按钮 -->
