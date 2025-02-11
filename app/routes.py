@@ -144,9 +144,7 @@ def feedback():
 
 @app.route('/feedback_report')
 def feedback_report():
-    # 进行联表查询：这里假设你想通过 SQLAlchemy 的 join() 获取用户信息
-    feedbacks = db.session.query(ChatbotFeedback, User).join(User, ChatbotFeedback.user_id == User.id).order_by(ChatbotFeedback.timestamp.desc()).all()
-    # 这将返回一个列表，每个元素是一个 (ChatbotFeedback, User) 的元组
+    feedbacks = ChatbotFeedback.query.order_by(ChatbotFeedback.timestamp.desc()).all()
     return render_template('feedback_report.html', feedbacks=feedbacks)
 
 
