@@ -14,27 +14,16 @@ if not HF_API_KEY:
 client = InferenceClient(api_key=HF_API_KEY)
 
 def chatbot_response(user_input):
-    messages = [
-        {
-            "role": "system",
-            "content": "You are a professional financial advisor, responsible for providing accurate and detailed financial advice and answering financial related questions. Please answer users' questions in a clear, concise and professional manner. You need to examine the specific degree of the user's needs to you, and for relatively general requirements, further understand the user's individual needs by asking questions to ensure that you can give the most accurate advice based on these needs"
-        },
-        {
-            "role": "user",
-            "content": user_input
-        }
-    ]
-    
     try:
-        # 使用适合聊天的模型，例如 'facebook/blenderbot-400M-distill'
-        completion = client.chat.completions.create(
-            model="facebook/blenderbot-400M-distill", 
-            messages=messages,
-            max_tokens=150,
+        # 直接传入用户输入，不使用多条消息
+        completion = client.text2text_generation.create(
+            model="facebook/blenderbot-400M-distill",
+            inputs=user_input,
+            max_new_tokens=150,
             temperature=0.7
         )
-        # 确保根据模型的响应结构提取内容
-        response_content = completion.choices[0].message['content']
+        # 根据返回结构提取生成的文本（注意实际返回结构可能需要调整）
+        response_content = completion[0]['generated_text']
         logger.info(f"User input: {user_input}")
         logger.info(f"AI response: {response_content}")
         return response_content
