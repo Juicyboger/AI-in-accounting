@@ -43,7 +43,7 @@ def login():
             if getattr(user, 'is_admin', False):
                 return redirect(url_for('home'))  # 管理员跳转到首页（home.html），首页中显示管理员专用链接
             else:
-                return redirect(url_for('chat'))  # 普通用户跳转到聊天页面
+                return redirect(url_for('home'))  # 普通用户跳转到聊天页面
         else:
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
