@@ -142,6 +142,11 @@ def feedback():
 
     return jsonify({'message': 'Feedback recorded successfully'})
 
+@app.route('/feedback_report')
+def feedback_report():
+    feedbacks = ChatbotFeedback.query.order_by(ChatbotFeedback.timestamp.desc()).all()
+    return render_template('feedback_report.html', feedbacks=feedbacks)
+
 
 
 
