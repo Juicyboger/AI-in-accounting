@@ -142,18 +142,6 @@ def feedback():
 
     return jsonify({'message': 'Feedback recorded successfully'})
 
-@app.route('/admin/feedback')
-@login_required
-def admin_feedback():
-    # 只有管理员才能访问
-    if not getattr(current_user, 'is_admin', False):
-        abort(403)  # 非管理员返回 403 Forbidden
-    # 查询所有反馈记录，按时间倒序排列
-    feedbacks = ChatbotFeedback.query.order_by(ChatbotFeedback.timestamp.desc()).all()
-    return render_template('admin_feedback.html', feedbacks=feedbacks)
-
-if __name__ == "__main__":
-    app.run()
 
 
 
