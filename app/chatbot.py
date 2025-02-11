@@ -33,7 +33,7 @@ def chatbot_response(user_input):
             temperature=0.7
         )
         # 根据返回结果提取内容（与示例保持一致）
-        response_content = completion.choices[0].message
+        response_content = completion.choices[0].message.get('content', '')
         logger.info(f"User input: {user_input}")
         logger.info(f"AI response: {response_content}")
         return response_content
