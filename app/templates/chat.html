@@ -4,16 +4,141 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-6 col-md-8 col-sm-10">
-        <h1 class="mb-4">Chat with our AI Assistant</h1>
-        <div id="chat-container">
-            <div id="chat-messages"></div>
-            <!-- 使用 Bootstrap 的表单类 -->
-            <form id="chat-form" class="d-flex">
-                <input type="text" id="user-input" class="form-control" placeholder="Type your message here..." required>
-                <button type="submit" class="btn btn-primary ms-2">Send</button>
-            </form>
-        </div>
+  <div class="col-lg-6 col-md-8 col-sm-10">
+    <h1 class="mb-4">Chat with our AI Assistant</h1>
+    <div id="chat-container">
+      <div id="chat-messages">
+        <!-- 初始时可能为空，后续新回答动态追加 -->
+      </div>
+      <!-- 聊天输入框及发送按钮 -->
+      <form id="chat-form" class="d-flex mt-3">
+        <input type="text" id="user-input" class="form-control" placeholder="Type your message here..." required>
+        <button type="submit" class="btn btn-primary ms-2">Send</button>
+      </form>
     </div>
+  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // 用户提交聊天信息时，生成新的回答和反馈区域
+  document.getElementById('chat-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const userInput = document.getElementById('user-input').value.trim();
+    if (!userInput) return;
+    
+    // 在此处调用实际的机器人回答逻辑，比如通过 AJAX 调用后端 API 获取回答
+    // 示例中直接模拟一个回答（请替换为实际的实现）
+    const chatbotAnswer = await getChatbotAnswer(userInput);
+    
+    // 清空输入框
+    document.getElementById('user-input').value = "";
+    
+    // 生成新的回答和反馈区域
+    appendChatbotAnswer(chatbotAnswer);
+  });
+
+  /**
+   * 模拟获取机器人回答的函数
+   * 你应替换为调用你实际聊天机器人接口的逻辑
+   * @param {string} userInput - 用户输入
+   * @returns {Promise<string>} - 模拟的机器人回答
+   */
+  async function getChatbotAnswer(userInput) {
+    // 模拟网络延时
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // 这里直接返回一个示例回答，请替换为真实回答
+        resolve("This is the answer to“" + userInput + "”.");
+      }, 500);
+    });
+  }
+
+  /**
+   * 动态生成一条新的机器人回答，并在回答下方附带独立的反馈区域
+   * @param {string} answerText - 机器人生成的答案文本
+   */
+  function appendChatbotAnswer(answerText) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = "chat-message chatbot mb-3";
+    
+    // 创建回答内容
+    const answerPara = document.createElement('p');
+    answerPara.className = "chatbot-answer";
+    answerPara.innerText = answerText;
+    
+    // 创建反馈区域，初始状态 data-feedback-submitted 为 "false"
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = "feedback mt-2";
+    feedbackDiv.setAttribute('data-feedback-submitted', 'false');
+    feedbackDiv.innerHTML = `
+      <span>Rate this answer: </span>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 1)">1★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 2)">2★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 3)">3★</button>
+      <button class="btn btn-sm btn-outline-warning me-1" onclick="submitFeedback(this, 4)">4★</button>
+      <button class="btn btn-sm btn-outline-warning" onclick="submitFeedback(this, 5)">5★</button>
+      <span class="feedback-msg text-success ms-2"></span>
+    `;
+    
+    // 将回答和反馈区域添加到消息容器中
+    messageDiv.appendChild(answerPara);
+    messageDiv.appendChild(feedbackDiv);
+    chatMessages.appendChild(messageDiv);
+    
+    // 自动滚动到最新消息
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  /**
+   * 提交反馈，针对当前回答
+   * @param {HTMLElement} button - 被点击的星级按钮
+   * @param {number} rating - 用户选择的星级（1~5）
+   */
+  async function submitFeedback(button, rating) {
+    // 定位到当前反馈区域
+    const feedbackBlock = button.parentElement;
+    
+    // 检查是否已提交反馈
+    if (feedbackBlock.getAttribute('data-feedback-submitted') === 'true') {
+      alert("你已经提交过反馈，不能重复提交。");
+      return;
+    }
+    
+    // 获取当前回答文本
+    const chatbotAnswerElement = feedbackBlock.parentElement.querySelector('.chatbot-answer');
+    const answerText = chatbotAnswerElement ? chatbotAnswerElement.innerText : "";
+    if (!answerText) {
+      alert("无法获取答案内容");
+      return;
+    }
+    
+    try {
+      const response = await fetch('/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ rating: rating, answer: answerText })
+      });
+      const result = await response.json();
+      if (response.ok) {
+        // 标记当前反馈区域为已提交
+        feedbackBlock.setAttribute('data-feedback-submitted', 'true');
+        // 显示反馈已提交提示
+        feedbackBlock.querySelector('.feedback-msg').innerText = "Your feedback has been submitted";
+        // 禁用反馈区域内所有按钮，防止重复提交
+        const buttons = feedbackBlock.querySelectorAll('button');
+        buttons.forEach(btn => btn.disabled = true);
+      } else {
+        alert(result.error || '反馈提交失败');
+      }
+    } catch (error) {
+      console.error('Feedback error:', error);
+      alert('提交反馈时发生错误');
+    }
+  }
+</script>
 {% endblock %}
