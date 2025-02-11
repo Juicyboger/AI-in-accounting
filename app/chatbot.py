@@ -14,19 +14,21 @@ if not HF_API_KEY:
 client = InferenceClient(provider="hf-inference", api_key=HF_API_KEY)
 
 def chatbot_response(user_input):
-    # 拼接系统提示和用户输入
-    prompt = (
-        "You are a professional financial advisor, responsible for providing accurate and detailed financial advice and answering financial related questions. "
-        "Please answer users' questions in a clear, concise and professional manner. "
-        "You need to examine the specific degree of the user's needs, and for relatively general requirements, further understand the user's individual needs by asking questions "
-        "to ensure that you can give the most accurate advice based on these needs.\n\n"
-        f"User: {user_input}\n\nAssistant:"
-    )
-    
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a professional financial advisor, responsible for providing accurate and detailed financial advice and answering financial related questions. Please answer users' questions in a clear, concise and professional manner. You need to examine the specific degree of the user's needs to you, and for relatively general requirements, further understand the user's individual needs by asking questions to ensure that you can give the most accurate advice based on these needs"
+        },
+        {
+            "role": "user",
+            "content": user_input
+        }
+    ]
+        
     try:
         completion = client.chat.completions.create(
             model="facebook/blenderbot-400M-distill", 
-            messages=prompt,  # 传入字符串
+            messages=messages,  # 传入字符串
             max_tokens=150,
             temperature=0.7
         )
