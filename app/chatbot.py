@@ -11,7 +11,7 @@ HF_API_KEY = os.getenv('HF_API_KEY')
 if not HF_API_KEY:
     raise ValueError("HF_API_KEY is not set in environment variables.")
 
-client = InferenceClient(api_key=HF_API_KEY)
+client = InferenceClient(provider="hf-inference"，api_key=HF_API_KEY)
 
 def chatbot_response(user_input):
     # 拼接系统提示和用户输入
