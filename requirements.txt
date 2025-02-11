@@ -7,4 +7,3 @@ gunicorn
 requests
 huggingface_hub
 yfinance
-flask-login
