@@ -29,11 +29,11 @@ def chatbot_response(user_input):
         completion = client.chat.completions.create(
             model="meta-llama/Meta-Llama-3-8B-Instruct", 
             messages=messages,  # 传入字符串
-            max_tokens=150,
+            max_tokens=400,
             temperature=0.7
         )
         # 根据返回结果提取内容（与示例保持一致）
-        response_content = completion.choices[0].message.get('content', '')
+        response_content = completion.choices[0].message
         logger.info(f"User input: {user_input}")
         logger.info(f"AI response: {response_content}")
         return response_content
