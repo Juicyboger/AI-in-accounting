@@ -7,6 +7,10 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)  # 新增字段，默认False
 
+    @property
+    def is_authenticated(self):
+        return True
+
 # models.py
 from datetime import datetime
 
